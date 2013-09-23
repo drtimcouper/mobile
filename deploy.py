@@ -3,8 +3,10 @@
 import os
 import shutil
 
-def main(fp):
-    shutil.copy(fp, os.path.expanduser('~/Dropbox/shared-phone/main.py'))
+def main(adir):
+    for fn in sorted(os.listdir(adir)):
+	fp = os.path.join(adir, fn)
+	shutil.copy(fp, os.path.expanduser('~/Dropbox/shared-phone/%s' % fn))
 
 
 if __name__ == '__main__':
@@ -21,4 +23,4 @@ if __name__ == '__main__':
         print "Failed to find 'main.py' in (existing) '%s'" % adir
         sys.exit(1)
 
-    main(fp)
+    main(adir)

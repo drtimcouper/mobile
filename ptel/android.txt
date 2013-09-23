@@ -1,0 +1,4 @@
+title=ptel
+author=Tim
+orientation=portrait
+
