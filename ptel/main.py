@@ -34,7 +34,7 @@ class RootWidget(ScrollView):
     def get_names(self):
         names = []
 
-        for i in range(40):
+        for i in range(20):
             if i ==2:
                 name = 'a very long name so there'
             else:
@@ -50,7 +50,7 @@ class RootWidget(ScrollView):
                                         row_force_default=True, row_default_height=HEIGHT,
                                         )
         grid.bind(minimum_height=grid.setter('height'))
-        for name, tel in self.get_names()[:4]:
+        for name, tel in self.get_names():
             nbtn = NameButton(text=name, size_hint_x=None, width=name_width)
             grid.add_widget(nbtn)
             tbtn = TelButton(text=tel, size_hint_x=None, width=tel_width)
@@ -80,7 +80,7 @@ class NameButton(Button):
     def on_pressed(self, instance, pos):
         # Show the notes:
         popup=MyPopup(title='Notes: %s' % self.text, anchor_y='top',
-                                    size_hint=(.8,.5))
+                                    size_hint=(.8,.7))
         popup.build(self.text)
         popup.open()
 
@@ -93,6 +93,11 @@ class MyPopup(Popup):
         s=STORAGE.get(self.name, '')
         self.tx = TextInput(text=s)
         self.content = self.tx
+
+    def on_open(self):
+       #Window.request_keyboard()
+        self.tx.focus=True
+        super(MyPopup,self).on_open()
 
     def on_dismiss(self):
         STORAGE[self.name] = self.tx.text
