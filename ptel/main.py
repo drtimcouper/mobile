@@ -19,6 +19,7 @@ from kivy.uix.popup import Popup
 from kivy.core.window import Window
 
 
+NROWS=20
 
 HEIGHT=100
 name_width, tel_width = 400,270#253,149
@@ -34,7 +35,7 @@ class RootWidget(ScrollView):
     def get_names(self):
         names = []
 
-        for i in range(20):
+        for i in range(NROWS):
             if i ==2:
                 name = 'a very long name so there'
             else:
@@ -65,28 +66,36 @@ class RootWidget(ScrollView):
 class NameButton(Button):
     pressed = ListProperty([0, 0])
 
-
     def __init__(self, **kwargs):
         super(NameButton, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
+            self.background_color = [0,.8,1,1]
             self.pressed = touch.pos
             # we consumed the touch. return False here to propagate
             # the touch further to the children.
-            return True
+            #return True
+        else:
+            self.background_color = [1,1,1,1]
         super(NameButton, self).on_touch_down(touch)
+
 
     def on_pressed(self, instance, pos):
         # Show the notes:
-        popup=MyPopup(title='Notes: %s' % self.text, anchor_y='top',
-                                    size_hint=(.8,.7))
+        popup=MyPopup(self)
         popup.build(self.text)
         popup.open()
 
 STORAGE={}
 
 class MyPopup(Popup):
+
+    def __init__(self, caller, **kwargs):
+        self.caller = weakref.ref(caller)
+        super(MyPopup, self).__init__(**kwargs)
+        self.title = 'Notes: %s' % caller.text
+        self.size_hint = (.7, .5)
 
     def build(self, name):
         self.name = name
@@ -96,6 +105,7 @@ class MyPopup(Popup):
 
     def on_open(self):
        #Window.request_keyboard()
+        self.pos = (Window.center[0]-self.width/2, Window.height-self.height)
         self.tx.focus=True
         super(MyPopup,self).on_open()
 
